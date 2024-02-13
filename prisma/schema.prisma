@@ -7,5 +7,98 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
+}
+
+model Users {
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  password String
+  cargo String
+  createdAt  DateTime  @default(now()) @db.Timestamp(0)
+  updatedtAt DateTime  @default(now()) @db.Timestamp(0)
+
+  @@map("users")
+}
+
+model Doctors{
+  id Int @id @default(autoincrement())
+  img String
+  name String
+  cpf String
+  email String
+  phone String
+  birth String
+  zipCode String
+  adress String
+  neighborhood String
+  number Int
+  observation String
+  office String
+  createdAt  DateTime  @default(now()) @db.Timestamp(0)
+  updatedtAt DateTime  @default(now()) @db.Timestamp(0)
+
+  consultations Consultations[]
+
+
+  @@map("doctors")
+}
+
+model Patients{
+  id Int @id @default(autoincrement())
+  img String
+  name String
+  cpf String
+  email String
+  phone String
+  birth String
+  zipCode String
+  adress String
+  neighborhood String
+  number Int
+  observation String
+  createdAt  DateTime  @default(now()) @db.Timestamp(0)
+  updatedtAt DateTime  @default(now()) @db.Timestamp(0)
+
+  consultations Consultations[]
+
+  @@map("patients")
+}
+
+model Dates {
+  id Int @id @default(autoincrement())
+  date String
+  createdAt  DateTime  @default(now()) @db.Timestamp(0)
+  updatedtAt DateTime  @default(now()) @db.Timestamp(0)
+
+  hourly Hourly[] 
+
+  @@map("dates")
+}
+
+model Hourly{
+  id Int @id @default(autoincrement())
+  timetable String
+  date Dates @relation(fields: [date_id], references: [id])
+  date_id Int
+
+  @@map("hourly")
+
+}
+
+
+model Consultations{
+  id Int @id @default(autoincrement())
+  patient Patients @relation(fields: [patient_id], references: [id])
+  doctor Doctors @relation(fields: [doctor_id], references: [id])
+  patient_id Int
+  doctor_id Int
+  finished Boolean @default(false)
+  date String
+  timetable String
+  observation String
+
+  @@map("consultations")
+
 }
