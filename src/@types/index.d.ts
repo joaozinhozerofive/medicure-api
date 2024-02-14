@@ -3,7 +3,6 @@ declare namespace Express{
       user : {
         id : number
       }
-      file : Multer.File
     }
   }
   

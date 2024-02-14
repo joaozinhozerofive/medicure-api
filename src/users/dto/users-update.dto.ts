@@ -1,12 +1,15 @@
 import {IsEmail, IsString, MinLength, IsOptional} from 'class-validator'
 
 export class UsersUpdateDTO {
+    user_id? : number
+
     @IsString()
     @IsOptional()
+    @MinLength(2)
 
     name? : string;
 
-    @IsEmail({})
+    @IsEmail()
     @IsOptional()
 
     email? : string;

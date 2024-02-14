@@ -38,16 +38,10 @@ export class AuthService {
 
      newToken(user : Users){
         try {
-            const payload = {
-                user_id : user.id,
-                name : user.name, 
-                email : user.email
-            }
-            const token = jwt.sign(
-                 payload,
-                 process.env.AUTH_SECRET,
-            {
-                 expiresIn : process.env.EXP_TOKEN    
+            const user_id = user.id
+            const token = jwt.sign({}, process.env.AUTH_SECRET, {
+                subject : String(user_id), 
+                expiresIn : process.env.EXP_TOKEN
             })
 
 
