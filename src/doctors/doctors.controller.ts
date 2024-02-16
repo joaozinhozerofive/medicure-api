@@ -1,22 +1,22 @@
 import { Body, Controller, Delete, FileTypeValidator, Get, MaxFileSizeValidator, ParseFilePipe, Post, Put } from "@nestjs/common";
 import { Param, Query, Res, UploadedFile, UseInterceptors} from "@nestjs/common/decorators"
-import { PatientsService } from "./patients.service";
-import { PatientCreateDTO } from "./dto/patient-create.dto";
+import { DoctorsService } from "./doctors.service";
+import { DoctorCreateDTO } from "./dto/doctor-create.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {File} from 'multer'
-import { PatientUpdateDTO } from "./dto/patient-update.dto";
+import { DoctorUpdateDTO} from "./dto/doctor-update.dto";
 import { Response } from "express";
 
-@Controller('patients')
-export class PatientsController{
+@Controller('doctors')
+export class DoctorsController{
     constructor(
-        private readonly patientsService : PatientsService,
+        private readonly doctorsService : DoctorsService,
         ){}
 
     @Post()
     @UseInterceptors(FileInterceptor('file'))
     async create(
-        @Body() {name, email, cpf, phone, birth, zipCode, adress, neighborhood, residenceCode, observation} : PatientCreateDTO,
+        @Body() {name, email, cpf, phone, birth, zipCode, adress, neighborhood, residenceCode, observation, office} : DoctorCreateDTO,
         @UploadedFile( new ParseFilePipe ({
             validators : [
                 new FileTypeValidator({fileType : 'image/png'}), 
@@ -25,31 +25,31 @@ export class PatientsController{
         })) file : File, 
         )
         {
-            return await this.patientsService.create({name, email, cpf, phone, birth, zipCode, adress, neighborhood, residenceCode, observation, file})
+            return await this.doctorsService.create({name, email, cpf, phone, birth, zipCode, adress, neighborhood, residenceCode, observation, file, office})
        
     }
 
     @Put(":id")
-    async update(@Body() {name, email, cpf, phone, birth, zipCode, adress, neighborhood, residenceCode, observation}:PatientUpdateDTO, 
+    async update(@Body() {name, email, cpf, phone, birth, zipCode, adress, neighborhood, residenceCode, observation, office}:DoctorUpdateDTO, 
     @Param('id') id : string
     )
 
     {
-        return await this.patientsService.update({name, email, cpf, phone, birth, zipCode, adress, neighborhood, residenceCode, observation,id})
+        return await this.doctorsService.update({name, email, cpf, phone, birth, zipCode, adress, neighborhood, residenceCode, observation,id, office})
     }
 
     @Get()
     async index(@Query('name') name : string, @Res() res : Response){
-        return await this.patientsService.index(name, res)
+        return await this.doctorsService.index(name, res)
     }
 
     @Get(":id")
     async show(@Param('id') id :  string, @Res() res : Response){
-        await this.patientsService.show(id, res)
+        await this.doctorsService.show(id, res)
     }
 
     @Delete(":id")
     async delete(@Param('id') id : string ){
-        await this.patientsService.delete(id)
+        await this.doctorsService.delete(id)
     }
 }

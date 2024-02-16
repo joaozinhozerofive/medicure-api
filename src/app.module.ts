@@ -5,9 +5,23 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './middlewares/auth.middleware';
 import { PatientsModule } from './patients/patients.module';
+import {ServeStaticModule} from '@nestjs/serve-static'
+import { join } from 'path';
+import { FileModule } from './file/file.module';
+import { DoctorsModule } from './doctors/doctors.module';
 
 @Module({
-  imports: [UsersModule, AuthModule, PatientsModule],
+  imports: [
+      DoctorsModule,
+      FileModule,
+      UsersModule,
+      AuthModule,
+      PatientsModule, 
+      ServeStaticModule.forRoot({
+        serveRoot: '/files',
+        rootPath: join(__dirname, '..', 'TMP'), 
+      })
+  ],
   controllers: [AppController],
   providers: [AppService]
 })

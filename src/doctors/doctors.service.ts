@@ -1,19 +1,19 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { PatientCreateDTO } from "./dto/patient-create.dto";
+import { DoctorCreateDTO } from "./dto/doctor-create.dto";
 import { FileService } from "src/file/file.service";
-import { PatientUpdateDTO } from "./dto/patient-update.dto";
+import { DoctorUpdateDTO } from "./dto/doctor-update.dto";
 import { Response } from "express";
 
 @Injectable()
-export class PatientsService{
+export class DoctorsService{
     constructor(
 
        private readonly prisma : PrismaService,
        private readonly fileService : FileService
 
     ){}
-
+    
     async create({
         name,
         email, 
@@ -25,8 +25,9 @@ export class PatientsService{
         neighborhood, 
         residenceCode,
         observation,
-        file
-    }: PatientCreateDTO) {
+        file, 
+        office
+    }: DoctorCreateDTO) {
 
       
       
@@ -39,7 +40,7 @@ export class PatientsService{
             filename = await this.fileService.upload(file)
          }
          try{
-            await this.prisma.patients.create({
+            await this.prisma.doctors.create({
                data :{
                   name,
                   email, 
@@ -51,12 +52,13 @@ export class PatientsService{
                   neighborhood, 
                   residenceCode,
                   observation,
-                  img : filename
+                  img : filename, 
+                  office
                }
             })
 
          }catch{
-            throw new BadRequestException("Não foi possível criar paciente")
+            throw new BadRequestException("Não foi possível criar médico")
          }
       }
 
@@ -73,10 +75,11 @@ export class PatientsService{
       neighborhood,
       residenceCode, 
       observation, 
-      id
-   }: PatientUpdateDTO){
+      id, 
+      office
+   }: DoctorUpdateDTO){
 
-      const user = await this.prisma.patients.findFirst({
+      const user = await this.prisma.doctors.findFirst({
          where :{
             id : Number(id)
          }
@@ -88,7 +91,7 @@ export class PatientsService{
       }
 
       try{
-         await this.prisma.patients.update({
+         await this.prisma.doctors.update({
             where : {
                id : user.id
             }, 
@@ -103,6 +106,7 @@ export class PatientsService{
                neighborhood,
                residenceCode, 
                observation, 
+               office
             }
          })
       }catch{
@@ -113,7 +117,7 @@ export class PatientsService{
 
     async index(name : string, res : Response){
 
-         const patients = await this.prisma.patients.findMany({
+         const doctors = await this.prisma.doctors.findMany({
 
             where: {
                   name:{
@@ -123,23 +127,23 @@ export class PatientsService{
             }
          })
          
-         return res.json(patients)
+         return res.json(doctors)
 
     }
 
     async show(id : string, res : Response){
 
 
-      const patient = await this.prisma.patients.findFirst({
+      const doctor = await this.prisma.doctors.findFirst({
          where : {
             id: Number(id)
          }
       })
 
-      if(!patient){
-         throw new BadRequestException("Não foi possível encontrar este paciente")
+      if(!doctor){
+         throw new BadRequestException("Não foi possível encontrar este médico")
       }else{
-         res.json(patient)
+         res.json(doctor)
       }
 
       
@@ -147,16 +151,16 @@ export class PatientsService{
 
     async delete(id : string){
 
-      const patient = await this.prisma.patients.findFirst({
+      const doctor = await this.prisma.doctors.findFirst({
          where : {
             id : Number(id)
          }
       })
 
-      if(!patient){
-         throw new BadRequestException("Não foi possível encontrar este paciente")
+      if(!doctor){
+         throw new BadRequestException("Não foi possível encontrar este médico")
       }else{
-         await this.prisma.patients.delete({
+         await this.prisma.doctors.delete({
             where : {
                id : Number(id)
             }
