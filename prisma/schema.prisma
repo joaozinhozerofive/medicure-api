@@ -40,6 +40,7 @@ model Doctors{
   updatedtAt DateTime  @default(now()) @db.Timestamp(0)
 
   consultations Consultations[]
+  dates Dates[]
 
 
   @@map("doctors")
@@ -71,6 +72,8 @@ model Dates {
   date String
   createdAt  DateTime  @default(now()) @db.Timestamp(0)
   updatedtAt DateTime  @default(now()) @db.Timestamp(0)
+  doctor Doctors @relation(fields: [doctor_id], references: [id])
+  doctor_id Int
 
   hourly Hourly[] 
 
@@ -80,7 +83,7 @@ model Dates {
 model Hourly{
   id Int @id @default(autoincrement())
   timetable String
-  date Dates @relation(fields: [date_id], references: [id])
+  date Dates @relation(fields: [date_id], references: [id], onDelete: Cascade)
   date_id Int
 
   @@map("hourly")

@@ -9,9 +9,13 @@ import {ServeStaticModule} from '@nestjs/serve-static'
 import { join } from 'path';
 import { FileModule } from './file/file.module';
 import { DoctorsModule } from './doctors/doctors.module';
+import { DateModule } from './dates/date.module';
+import { ConsultationsModule } from './consultations/consultations.module';
 
 @Module({
   imports: [
+      ConsultationsModule,
+      DateModule,
       DoctorsModule,
       FileModule,
       UsersModule,
