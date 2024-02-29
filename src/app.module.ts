@@ -16,9 +16,12 @@ import { DateController } from './dates/date.controller';
 import { DoctorsController } from './doctors/doctors.controller';
 import { UsersController } from './users/users.controller';
 import { FileController } from './file/file.controller';
+import { HourlyModule } from './hourly/hourly.module';
+import { HourlyController } from './hourly/hourly.controller';
 
 @Module({
   imports: [
+      HourlyModule,
       ConsultationsModule,
       DateModule,
       DoctorsModule,
@@ -39,6 +42,6 @@ export class AppModule {
   configure(consumer : MiddlewareConsumer){
     consumer.apply(AuthMiddleware)
     .exclude({path : "/file", method : RequestMethod.GET})
-      .forRoutes(ConsultationsController, DateController, DoctorsController, UsersController, FileController)
+      .forRoutes(ConsultationsController, DateController, DoctorsController, UsersController, FileController, HourlyController)
   }
 }
