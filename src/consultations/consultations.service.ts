@@ -42,8 +42,7 @@ export class ConsultationsService {
                 doctor_id
             }
         })
-
-
+      
         if(!checkDateExists){
             throw new BadRequestException("Não existem horários para a data selecionada")
         }
@@ -67,7 +66,24 @@ export class ConsultationsService {
             throw new BadRequestException("Este horário não está disponível para a data desejada.")
         }
 
+        const hourlyId = await this.prisma.hourly.findFirst({
+            where : {
+                timetable, 
+                dateSelected : date
+            } 
+           })
+
         try{
+
+            await this.prisma.hourly.update({
+                where : {
+                    id : hourlyId.id
+            }, 
+            data : {
+                available : false
+            }
+            })
+
             await this.prisma.consultations.create({
                 data : {
                     date, 
@@ -92,6 +108,7 @@ export class ConsultationsService {
                 id : Number(id)
             }
         })
+
 
         if(!consultation){
             throw new BadRequestException("Não foi possível encontrar esta consulta")
@@ -155,6 +172,57 @@ export class ConsultationsService {
         }
 
         try{
+
+            const dates = await this.prisma.dates.findFirst({
+                where : {
+                    doctor_id : consultation.doctor_id, 
+                    date : consultation.date
+                    
+                }
+            })
+
+            const consultationHourly = await this.prisma.hourly.findFirst({
+                where : {
+                    timetable : consultation.timetable,
+                    dateSelected : consultation.date,
+                    date_id : dates.id
+                }
+            })
+
+            const hourlyUpdate = await this.prisma.hourly.findFirst({
+                where : {
+                    date_id : checkDateExists.id, 
+                    timetable
+                }
+            })
+
+            
+
+            if(timetable !== consultation.timetable){
+                await this.prisma.hourly.update({
+                    where : {
+                        id : consultationHourly.id
+                    }, 
+                    data: {
+                        available : true
+                    }
+                })
+
+                await this.prisma.hourly.update({
+                    where : {
+                        id : hourlyUpdate.id
+                    }, 
+                    data : {
+                        available  : false
+                    }
+                })
+
+
+            }
+
+
+            
+            
             await this.prisma.consultations.update({
                 where : {
                     id : Number(id)
@@ -218,14 +286,42 @@ export class ConsultationsService {
             }, 
         })
 
+        const dates = await this.prisma.dates.findFirst({
+            where : {
+                doctor_id : consultation.doctor_id, 
+                date : consultation.date
+            }
+        })
+
+        const hourlyUpdate =  await this.prisma.hourly.findFirst({
+            where : {
+                timetable : consultation.timetable,
+                date_id : dates.id
+            }
+        })
+
+
+        
+
         if(!consultation){
             throw new BadRequestException("Não foi possível encontrar esta consulta.")
         } else{
+            await this.prisma.hourly.update({
+                where : {
+                    id : hourlyUpdate.id
+                }, 
+                data : {
+                    available : true
+                }
+            })
+
             await this.prisma.consultations.delete({
                 where :{
                     id : Number(id)
                 }
             })
+
+
         }
 
 }

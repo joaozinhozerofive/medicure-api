@@ -85,6 +85,8 @@ model Hourly{
   timetable String
   date Dates @relation(fields: [date_id], references: [id], onDelete: Cascade)
   date_id Int
+  available Boolean @default(true)
+  dateSelected String?
 
   @@map("hourly")
 
@@ -97,7 +99,7 @@ model Consultations{
   doctor Doctors @relation(fields: [doctor_id], references: [id])
   patient_id Int
   doctor_id Int
-  finished Boolean @default(false)
+  finished Boolean @default(true)
   date String
   timetable String
   observation String

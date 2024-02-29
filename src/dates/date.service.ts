@@ -48,7 +48,8 @@ export class DateService{
                 await this.prisma.hourly.createMany({
                     data :{
                         timetable, 
-                        date_id : newDate.id
+                        date_id : newDate.id,
+                        dateSelected : date
                     }
                 })
             })
@@ -115,7 +116,9 @@ export class DateService{
                         await this.prisma.hourly.createMany({
                             data :{
                                 timetable, 
-                                date_id : Number(id)
+                                date_id : Number(id), 
+                                dateSelected : date
+
                             }
                         })
                     })
@@ -144,6 +147,9 @@ export class DateService{
         const dates = await this.prisma.dates.findMany({
             where : {
                 doctor_id : Number(doctor_id)
+            }, 
+            include :{
+                hourly : true
             }
         })
         

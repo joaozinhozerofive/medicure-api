@@ -14,7 +14,7 @@ export class FileController{
     async updateFilePatient(
         @UploadedFile( new ParseFilePipe ({
             validators : [
-                new FileTypeValidator({fileType : 'image/png'}), 
+                new FileTypeValidator({fileType : 'image/png' || 'image/jpg' || 'image/jpeg'}), 
                 new MaxFileSizeValidator({maxSize : 1024 * 50})
             ]
         })) file : File, 

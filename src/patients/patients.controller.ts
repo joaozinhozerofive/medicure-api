@@ -19,8 +19,8 @@ export class PatientsController{
         @Body() {name, email, cpf, phone, birth, zipCode, adress, neighborhood, residenceCode, observation} : PatientCreateDTO,
         @UploadedFile( new ParseFilePipe ({
             validators : [
-                new FileTypeValidator({fileType : 'image/png'}), 
-                new MaxFileSizeValidator({maxSize : 1024 * 50})
+                new FileTypeValidator({fileType : 'image/png' || 'image/jpg' || 'image/jpeg'}), 
+                new MaxFileSizeValidator({maxSize : 1024 * 300})
             ]
         })) file : File, 
         )

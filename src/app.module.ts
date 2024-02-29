@@ -11,6 +11,11 @@ import { FileModule } from './file/file.module';
 import { DoctorsModule } from './doctors/doctors.module';
 import { DateModule } from './dates/date.module';
 import { ConsultationsModule } from './consultations/consultations.module';
+import { ConsultationsController } from './consultations/consultations.controller';
+import { DateController } from './dates/date.controller';
+import { DoctorsController } from './doctors/doctors.controller';
+import { UsersController } from './users/users.controller';
+import { FileController } from './file/file.controller';
 
 @Module({
   imports: [
@@ -33,11 +38,7 @@ import { ConsultationsModule } from './consultations/consultations.module';
 export class AppModule {
   configure(consumer : MiddlewareConsumer){
     consumer.apply(AuthMiddleware)
-    .exclude(
-      {path : '/users', method : RequestMethod.POST},
-      {path : '/auth', method : RequestMethod.POST}
-      )
-    .forRoutes('*')
-    
+    .exclude({path : "/file", method : RequestMethod.GET})
+      .forRoutes(ConsultationsController, DateController, DoctorsController, UsersController, FileController)
   }
 }
