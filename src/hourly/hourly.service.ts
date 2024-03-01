@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { Response } from "express";
 import { PrismaService } from "src/prisma/prisma.service";
 
@@ -6,7 +6,8 @@ import { PrismaService } from "src/prisma/prisma.service";
 export class HourlyService{
     constructor(private readonly prisma : PrismaService){}
 
-    async index(date : string, doctor_id : string, res : Response){
+    async index(date : string, doctor_id : string, res : Response, consultation_id : string){
+
         const dates =  await this.prisma.dates.findFirst({
             where : {
                 date, 
@@ -15,13 +16,70 @@ export class HourlyService{
         })
 
 
-        const hourly =  await this.prisma.hourly.findMany({
-            where :{
-                date_id : dates.id
+        if(dates){
+            const hourly =  await this.prisma.hourly.findMany({
+                where :{
+                    date_id : dates.id, 
+                    available : true
+                }, 
+                select : {
+                    timetable : true
+                }
+            })
+
+
+            if(consultation_id){
+                const consultation = await this.prisma.consultations.findFirst({
+                    where :{
+                        id : Number(consultation_id)
+                    }
+                })
+
+
+                if(consultation.date === date){
+
+                    const consultationHourly = consultation.timetable
+        
+                    const timetables = hourly.concat({ timetable: consultationHourly });
+                
+                    res.json(timetables)
+                }else{
+                    res.json(hourly)
+                }
+        
+            }
+            
+        }else{
+            res.json()
+        }
+
+        
+    }
+
+
+    async show(date_id : string, res : Response){
+
+        const date = await this.prisma.dates.findFirst({
+            where : {
+                id : Number(date_id)
             }
         })
 
-        res.json(hourly)
+
+        if(!date){
+            throw new BadRequestException("Não foi possível encontrar esta data")
+        }else{
+            const hourly = await this.prisma.hourly.findMany({
+                where : {
+                    date_id : date.id
+                }
+            })
+
+
+            res.json(hourly)
+        }
+
+        
     }
 }
     

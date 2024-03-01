@@ -2,6 +2,8 @@ import {IsString, IsEmail, Matches, MinLength } from 'class-validator'
 import {File} from 'multer'
 export class DoctorCreateDTO{
     file : File
+    phone : string;
+
     @IsString()
     @MinLength(2)
     name : string;
@@ -15,7 +17,6 @@ export class DoctorCreateDTO{
     @IsEmail()
     email : string;
 
-    phone : string;
 
 
     @IsString()

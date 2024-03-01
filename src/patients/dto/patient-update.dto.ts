@@ -2,6 +2,8 @@ import {IsString, IsEmail, Matches, MinLength, IsOptional } from 'class-validato
 
 
 export class PatientUpdateDTO{
+    phone? : string;
+
     @IsOptional()
     id? : string | number
 
@@ -18,7 +20,6 @@ export class PatientUpdateDTO{
     @IsEmail()
     email? : string;
 
-    phone? : string;
 
     @IsOptional()
     @IsString()

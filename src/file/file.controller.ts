@@ -15,7 +15,7 @@ export class FileController{
         @UploadedFile( new ParseFilePipe ({
             validators : [
                 new FileTypeValidator({fileType : 'image/png' || 'image/jpg' || 'image/jpeg'}), 
-                new MaxFileSizeValidator({maxSize : 1024 * 50})
+                new MaxFileSizeValidator({maxSize : 1024 * 300})
             ]
         })) file : File, 
         @Param('id') id : string
@@ -30,7 +30,7 @@ export class FileController{
         @UploadedFile( new ParseFilePipe ({
             validators : [
                 new FileTypeValidator({fileType : 'image/png'}), 
-                new MaxFileSizeValidator({maxSize : 1024 * 50})
+                new MaxFileSizeValidator({maxSize : 1024 * 300})
             ]
         })) file : File, 
         @Param('id') id : string
