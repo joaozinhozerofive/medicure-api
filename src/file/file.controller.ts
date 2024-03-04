@@ -1,4 +1,4 @@
-import { Controller, FileTypeValidator, MaxFileSizeValidator, Param, ParseFilePipe, Patch, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Controller, Param, Patch, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {File} from 'multer'
 import { FileService } from "./file.service";
@@ -12,12 +12,7 @@ export class FileController{
     @UseInterceptors(FileInterceptor('file'))
     @Patch('patient/:id')
     async updateFilePatient(
-        @UploadedFile( new ParseFilePipe ({
-            validators : [
-                new FileTypeValidator({fileType : 'image/png' || 'image/jpg' || 'image/jpeg'}), 
-                new MaxFileSizeValidator({maxSize : 1024 * 300})
-            ]
-        })) file : File, 
+        @UploadedFile() file : File, 
         @Param('id') id : string
 
     ){
@@ -27,12 +22,7 @@ export class FileController{
     @UseInterceptors(FileInterceptor('file'))
     @Patch('doctor/:id')
     async updateFileDoctor(
-        @UploadedFile( new ParseFilePipe ({
-            validators : [
-                new FileTypeValidator({fileType : 'image/png'}), 
-                new MaxFileSizeValidator({maxSize : 1024 * 300})
-            ]
-        })) file : File, 
+        @UploadedFile() file : File, 
         @Param('id') id : string
 
     ){

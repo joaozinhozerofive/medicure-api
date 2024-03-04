@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, FileTypeValidator, Get, MaxFileSizeValidator, ParseFilePipe, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete,  Get, Post, Put } from "@nestjs/common";
 import { Param, Query, Res, UploadedFile, UseInterceptors} from "@nestjs/common/decorators"
 import { PatientsService } from "./patients.service";
 import { PatientCreateDTO } from "./dto/patient-create.dto";
@@ -17,12 +17,7 @@ export class PatientsController{
     @UseInterceptors(FileInterceptor('file'))
     async create(
         @Body() {name, email, cpf, phone, birth, zipCode, adress, neighborhood, residenceCode, observation} : PatientCreateDTO,
-        @UploadedFile( new ParseFilePipe ({
-            validators : [
-                new FileTypeValidator({fileType : 'image/png' || 'image/jpg' || 'image/jpeg'}), 
-                new MaxFileSizeValidator({maxSize : 1024 * 300})
-            ]
-        })) file : File, 
+        @UploadedFile() file : File, 
         )
         {
             return await this.patientsService.create({name, email, cpf, phone, birth, zipCode, adress, neighborhood, residenceCode, observation, file})
